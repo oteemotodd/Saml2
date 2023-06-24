@@ -175,6 +175,9 @@ namespace Sustainsys.Saml2.Configuration
                 modulePath = value;
             }
         }
+        public string AssertionConsumerServicePath { get; set; }
+        public string SignInPath { get; set; }
+        public string LogoutPath { get; set; }
 
         /// <summary>
         /// By default, the service provider uses the host, protocol, port and

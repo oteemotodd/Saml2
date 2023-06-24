@@ -19,6 +19,8 @@ namespace Sustainsys.Saml2.WebSso
         /// </summary>
         public const string AcsCommandName = "Acs";
 
+        public const string SpLoginCommandName = "splogin";
+
         /// <summary>
         /// The name of the Sign In Command.
         /// </summary>
@@ -41,6 +43,7 @@ namespace Sustainsys.Saml2.WebSso
         { 
             { SignInCommandName, new SignInCommand() },
             { AcsCommandName, new AcsCommand() },
+            { SpLoginCommandName, new AcsCommand() },
             { MetadataCommand, new MetadataCommand() },
             { LogoutCommandName, new LogoutCommand() }
         };

@@ -35,8 +35,9 @@ namespace Sustainsys.Saml2.WebSso
                 throw new ArgumentNullException(nameof(options));
             }
 
-            var publicOrigin = options.Notifications.GetPublicOrigin(request) ?? options.SPOptions.PublicOrigin ?? request.ApplicationUrl;
-            Init(publicOrigin, options.SPOptions.ModulePath);
+            var publicOrigin = options.Notifications.GetPublicOrigin(request) 
+                               ?? options.SPOptions.PublicOrigin ?? request.ApplicationUrl;
+            Init(publicOrigin, options.SPOptions.ModulePath, options.SPOptions);
 
             options.SPOptions.Logger.WriteVerbose("Expanded Saml2Url"
                 + "\n  AssertionConsumerServiceUrl: " + AssertionConsumerServiceUrl
@@ -87,7 +88,10 @@ namespace Sustainsys.Saml2.WebSso
             ApplicationUrl = applicationUrl;
         }
 
-        void Init(Uri publicOrigin, string modulePath)
+        void Init(
+            Uri publicOrigin, 
+            string modulePath,
+            SPOptions spOptions=null)
         {
             if (!modulePath.StartsWith("/", StringComparison.OrdinalIgnoreCase))
             {
@@ -99,12 +103,15 @@ namespace Sustainsys.Saml2.WebSso
                 publicOrigin = new Uri(publicOrigin.AbsoluteUri + "/");
             }
 
-            var Saml2Root = publicOrigin.AbsoluteUri.TrimEnd('/') + modulePath + "/";
+            var Saml2Root = publicOrigin.AbsoluteUri.TrimEnd('/') + modulePath.TrimEnd('/') + "/";
 
-            AssertionConsumerServiceUrl = new Uri(Saml2Root + CommandFactory.AcsCommandName);
-            SignInUrl = new Uri(Saml2Root + CommandFactory.SignInCommandName);
+            AssertionConsumerServiceUrl = new Uri(Saml2Root 
+                + (spOptions?.AssertionConsumerServicePath ?? CommandFactory.AcsCommandName));
+            SignInUrl = new Uri(Saml2Root 
+                + (spOptions?.SignInPath ?? CommandFactory.SignInCommandName));
             ApplicationUrl = publicOrigin;
-            LogoutUrl = new Uri(Saml2Root + CommandFactory.LogoutCommandName);
+            LogoutUrl = new Uri(Saml2Root 
+                + (spOptions?.LogoutPath ?? CommandFactory.LogoutCommandName));
         }
 
         /// <summary>
